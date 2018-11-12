@@ -21,24 +21,24 @@ export class Random
      */
     static Random0To9Int()
     {
-        return Math.floor(Math.random()*10);
+        return Math.floor(Math.random() * 10);
     }
 
     /**
      *  min max 间随机产生一个小数 min包括 max包括
      */
-    static RandomInt(min:number,max:number)
+    static RandomInt(min: number, max: number)
     {
-        let offset=max-min;
-        let num=Math.floor(Math.random()*(offset+1))+min;
+        let offset = max - min;
+        let num = Math.floor(Math.random() * (offset + 1)) + min;
         return num;
     }
 
     /**
      *  min max 间随机产生一个小数 min包括 max不包括
      */
-    static RandomFloat(min:number,max:number)
+    static RandomFloat(min: number, max: number)
     {
-        return Math.random()*(max-min)+min;
+        return Math.random() * (max - min) + min;
     }
 }

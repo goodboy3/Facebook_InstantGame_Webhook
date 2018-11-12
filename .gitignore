@@ -39,6 +39,7 @@ Redis-x64-3.2.100/
 dist/
 sslkey/
 sourceMap/
+logs/
 
 # TypeScript v1 declaration files
 typings/

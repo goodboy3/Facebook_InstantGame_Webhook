@@ -1,11 +1,12 @@
 import { Application } from "express";
 import { RedisHelper } from "./RedisHelper";
 import { MessagerSender } from "./MessagerSender";
+import { LogHelper } from "./LogHelper";
 
 export abstract class SubGameBase
 {
     name: string = "";//游戏名称
-    appId:string ="";//应用ID
+    appId: string = "";//应用ID
     pageAccessToken: string = "";//游戏口令
     hook: string = "";
     app: Application = null;
@@ -14,21 +15,28 @@ export abstract class SubGameBase
     /**
      * 开始服务,需要为 name token hook app赋值
      */
-    abstract StartService(app:Application);
+    abstract StartService(app: Application);
 
     RunResponse()
     {
         this.ResponseGet();
         this.ResponsePost();
     }
-    
+
     ResponseGet()
     {
         if (this.app == null) 
         {
-            console.log(this.name + " app is null");
+            LogHelper.error(this.name + " app is null");
             return;
         }
+        this.app.get(this.hook + "/isRun", (req: any, res: any) =>
+        {
+            res.writeHead(200, {
+                'Content-Type': 'text-plain'
+            });
+            res.end("{" + this.name + "] is running\n" + new Date().toString());
+        });
         this.app.get(this.hook,
             function (req, res)
             {
@@ -48,7 +56,7 @@ export abstract class SubGameBase
                     if (mode === 'subscribe' && token === this.pageAccessToken)
                     {
                         // Respond with 200 OK and challenge token from the request
-                        console.log('WEBHOOK_VERIFIED');
+                        LogHelper.info('WEBHOOK_VERIFIED');
                         res.status(200).send(challenge);
                     } else
                     {
@@ -63,7 +71,7 @@ export abstract class SubGameBase
     {
         if (this.app == null) 
         {
-            console.log(this.name + " app is null");
+            LogHelper.error(this.name + " app is null");
             return;
         }
         this.app.post(this.hook,
@@ -71,9 +79,9 @@ export abstract class SubGameBase
             {
                 // Parse the request body from the POST
                 let body = req.body;
-                //console.log("");
-                //console.log("body");
-                //console.log(body);
+                LogHelper.debug("");
+                LogHelper.debug("body");
+                LogHelper.debug(body);
                 // Check the webhook event is from a Page subscription
                 if (body.object === 'page')
                 {
@@ -83,8 +91,8 @@ export abstract class SubGameBase
                         // Get the webhook event. entry.messaging is an array, but 
                         // will only ever contain one event, so we get index 0
                         let event = entry.messaging[0];
-                        //console.log("messaging:");
-                        //console.log(event);
+                        LogHelper.debug("messaging:");
+                        LogHelper.debug(event);
                         if (event.game_play) 
                         {
                             this.HandleGamePlay(event);
@@ -107,30 +115,30 @@ export abstract class SubGameBase
 
     HandleMessage(event: any)
     {
-        let id=event.sender.id;
+        let id = event.sender.id;
         if (event.message.text) 
         {
-            let json={text:"Thank you for your attention. Please enjoy the game."};
-            MessagerSender.Send(id,json,this.pageAccessToken);
+            let json = { text: "Thank you for your attention. Please enjoy the game." };
+            MessagerSender.Send(id, json, this.pageAccessToken);
         }
     }
 
     HandleGamePlay(event: any)
     {
-        let senderId=event.sender.id;//senderId
+        let senderId = event.sender.id;//senderId
         let playerId = event.game_play.player_id;//玩家ID
         let contextId = event.game_play.context_id;//contextID
-        let receiveTime=event.timestamp;//发送时间戳
+        let receiveTime = event.timestamp;//发送时间戳
 
         //保存退出游戏的时间
         RedisHelper.client.hset(this.name, senderId, receiveTime,
-            function(err,res)
+            function (err, res)
             {
                 if (err) 
                 {
-                    console.log(err);    
+                    console.log(err);
                 }
-            });   
+            });
     }
 
 }

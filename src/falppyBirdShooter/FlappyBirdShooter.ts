@@ -5,6 +5,7 @@ import { MessagerSender } from "../MessagerSender";
 import { GenericTemplate } from "../MessageTemplate";
 import { Random } from "../Random";
 import schedule from 'node-schedule';
+import { LogHelper } from "../LogHelper";
 
 export class FlappyBirdShooter extends SubGameBase
 {
@@ -64,19 +65,19 @@ export class FlappyBirdShooter extends SubGameBase
         this.app = app;
 
         let nameStr = "[" + this.name + "]";
-        console.log(nameStr + " Webhook Start")
-        console.log(nameStr + " webhook address:" + this.hook);
+        LogHelper.info(nameStr + " Webhook Start")
+        LogHelper.info(nameStr + " webhook address:" + this.hook);
 
         this.RunResponse();
 
         //开启定时任务
-        console.log(nameStr + " scheduleJob Ready");
+        LogHelper.info(nameStr + " scheduleJob Ready");
         schedule.scheduleJob("0 7 * * * *",
             function ()
             {
                 this.ScheduleCheck();
             }.bind(this));
-        console.log("");
+        LogHelper.info("");
     }
 
     HandleGamePlay(event: any)
@@ -86,7 +87,7 @@ export class FlappyBirdShooter extends SubGameBase
         let contextId = event.game_play.context_id;//contextID
         if (!event.game_play.payload) 
         {
-            return;    
+            return;
         }
         let payload = JSON.parse(event.game_play.payload);//附带数据
         let receiveTime = event.timestamp;//发送时间戳
@@ -114,9 +115,9 @@ export class FlappyBirdShooter extends SubGameBase
     ScheduleCheck()
     {
         //获取当前所有的senderId和信息
-        console.log("Start to check: Do need send message to player");
+        LogHelper.info("Start to check: Do need send message to player");
         var nowTime = Date.now();
-        console.log("startTime:" + nowTime.toString());
+        LogHelper.info("startTime:" + new Date(nowTime).toString());
         //遍历每个senderId
         RedisHelper.client.hgetall(this.name,
             function (e, v)
@@ -147,7 +148,7 @@ export class FlappyBirdShooter extends SubGameBase
             }.bind(this),
             function (err)//失败
             {
-                console.log("发送失败,删除这个用户:" + id);
+                LogHelper.info("发送失败,删除这个用户:" + id);
                 RedisHelper.client.hdel(this.name, id,
                     function (e, v)
                     {

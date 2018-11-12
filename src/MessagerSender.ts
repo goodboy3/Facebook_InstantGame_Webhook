@@ -1,4 +1,5 @@
 import request from 'request';
+import { LogHelper } from './LogHelper';
 
 export class MessagerSender
 {
@@ -24,7 +25,7 @@ export class MessagerSender
                 }
                 else
                 {
-                    console.error("Unable to send message:" + error);
+                    LogHelper.error("Unable to send message:",error);
                     if (failCallback) 
                     {
                         failCallback(error);

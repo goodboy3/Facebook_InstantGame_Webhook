@@ -9,17 +9,17 @@
 // }
 export interface GenericTemplate
 {
-    attachment:GenericTemplateAttachment
+    attachment: GenericTemplateAttachment
 }
 export interface GenericTemplateAttachment
 {
-    type:string;
-    payload:GenericTemplateAttachmentPayload
+    type: string;
+    payload: GenericTemplateAttachmentPayload
 }
 export interface GenericTemplateAttachmentPayload
 {
-    template_type:string;
-    elements:Element[];
+    template_type: string;
+    elements: Element[];
 }
 
 // listTemplate={
@@ -34,19 +34,19 @@ export interface GenericTemplateAttachmentPayload
 // }
 export interface ListTemplate
 {
-    attachment:ListTemplateAttachment
+    attachment: ListTemplateAttachment
 }
 export interface ListTemplateAttachment
 {
-    type:string;
-    payload:ListTemplateAttachmentPayload
+    type: string;
+    payload: ListTemplateAttachmentPayload
 }
 export interface ListTemplateAttachmentPayload
 {
-    template_type:string;
-    top_element_style:string;
-    sharable:boolean;
-    elements:Element[];
+    template_type: string;
+    top_element_style: string;
+    sharable: boolean;
+    elements: Element[];
 }
 
 
@@ -58,10 +58,10 @@ export interface ListTemplateAttachmentPayload
 // }
 export interface Element
 {
-    title:string;
-    image_url:string;
-    subtitle:string;
-    buttons:GamePlayButton[];
+    title: string;
+    image_url: string;
+    subtitle: string;
+    buttons: GamePlayButton[];
 }
 
 // gamePlayButton={
@@ -71,9 +71,9 @@ export interface Element
 // }
 export interface GamePlayButton
 {
-    type:string;
-    title:string;
-    payload:string;
+    type: string;
+    title: string;
+    payload?: string;
 }
 
 // buttonPayload={
@@ -83,14 +83,14 @@ export interface GamePlayButton
 // }
 export interface GamePlayButtonPayload
 {
-    share:number;
-    s:string[];
-    q:string[];
+    share: number;
+    s: string[];
+    q: string[];
 }
 
 export class MessageTemplate
 {
-    static genericTemplate:GenericTemplate = {
+    static genericTemplate: GenericTemplate = {
         attachment: {
             type: "template",
             payload: {
@@ -99,31 +99,31 @@ export class MessageTemplate
             }
         }
     }
-    static listTemplate:ListTemplate={
+    static listTemplate: ListTemplate = {
         attachment: {
             type: "template",
             payload: {
                 template_type: "list",
-                top_element_style:"compact",
-                sharable:false,
+                top_element_style: "compact",
+                sharable: false,
                 elements: []
             }
         }
     }
-    static element:Element={
-        title:"Question:",
-        image_url:"",
-        subtitle:"",
-        buttons:[]
+    static element: Element = {
+        title: "Question:",
+        image_url: "",
+        subtitle: "",
+        buttons: []
     }
 
-    static gamePlayButton:GamePlayButton={
+    static gamePlayButton: GamePlayButton = {
         type: "game_play",
         title: "Ask Friend",
         payload: ""
     }
 
-    static buttonPayload:GamePlayButtonPayload={
+    static buttonPayload: GamePlayButtonPayload = {
         share: 1,
         s: ["283504779039200", "webhook", ""],
         q: ["0", "", ""]

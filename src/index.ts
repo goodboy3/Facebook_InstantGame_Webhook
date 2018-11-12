@@ -1,13 +1,16 @@
 import { HttpsServer } from "./HttpsServer";
 import { RedisHelper } from "./RedisHelper";
+import { LogHelper } from "./LogHelper";
 
 
 
 
-class StartUp {
-    public static main():number
+class StartUp
+{
+    public static main(): number
     {
-        console.log("Server server");
+        LogHelper.Init();
+        LogHelper.info("Server server");
 
         //redis-client初始化
         RedisHelper.Init();

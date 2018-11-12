@@ -2,6 +2,7 @@ import { SubGameBase } from "../SubGameBase";
 import { RedisHelper } from "../RedisHelper";
 import { GenericTemplate } from "../MessageTemplate";
 import { MessagerSender } from "../MessagerSender";
+import { LogHelper } from "../LogHelper";
 
 export class InstantGameDemo extends SubGameBase
 {
@@ -37,12 +38,12 @@ export class InstantGameDemo extends SubGameBase
         this.app = app;
 
         let nameStr = "[" + this.name + "]";
-        console.log(nameStr + " Webhook Start")
-        console.log(nameStr + " webhook address:" + this.hook);
+        LogHelper.info(nameStr + " Webhook Start")
+        LogHelper.info(nameStr + " webhook address:" + this.hook);
 
         this.RunResponse();
 
-        console.log("");
+        LogHelper.info("");
     }
 
     HandleGamePlay(event: any)
@@ -52,7 +53,7 @@ export class InstantGameDemo extends SubGameBase
         let contextId = event.game_play.context_id;//contextID
         if (!event.game_play.payload) 
         {
-            return;    
+            return;
         }
         let payload = JSON.parse(event.game_play.payload);//附带数据
         let receiveTime = event.timestamp;//发送时间戳
@@ -66,11 +67,11 @@ export class InstantGameDemo extends SubGameBase
                 {
                     if (err) 
                     {
-                        //console.log("fail:" + err);
+                        //LogHelper.error("fail:" + err);
                     }
                     else
                     {
-                        //console.log("success:" + res);
+                        //LogHelper.info("success:" + res);
                         this.SendGameButton(senderId);
                     }
                 }.bind(this));
@@ -82,13 +83,13 @@ export class InstantGameDemo extends SubGameBase
         MessagerSender.Send(id, this.genericTemplate, this.pageAccessToken,
             function ()//成功
             {
-               console.log("发送成功");
-               
+                LogHelper.info("发送成功");
+
             }.bind(this),
             function (err)//失败
             {
-                console.log("发送失败");
-                
+                LogHelper.info("发送失败");
+
             }.bind(this));
     }
 }

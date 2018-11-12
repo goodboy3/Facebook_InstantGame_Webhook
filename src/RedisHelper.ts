@@ -1,4 +1,5 @@
 import redis from 'redis';
+import { LogHelper } from './LogHelper';
 
 export class RedisHelper
 {
@@ -14,20 +15,20 @@ export class RedisHelper
     // }
 
     //内存数据库     
-    static client:redis.RedisClient = null;
+    static client: redis.RedisClient = null;
 
     static Init()
     {
-        RedisHelper.client=redis.createClient();
+        RedisHelper.client = redis.createClient();
         //错误监听
         RedisHelper.client.on("error", function (err)
         {
-            console.error("Error " + err);
+            LogHelper.error(err);
         });
 
-        RedisHelper.client.on("ready",function(err)
+        RedisHelper.client.on("ready", function (info)
         {
-            console.log("redisCache connection succeed")
+            LogHelper.info("redisCache connection succeed",info)
         });
     }
 
