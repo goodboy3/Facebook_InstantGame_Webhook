@@ -57,6 +57,8 @@ export class FlappyBirdShooter extends SubGameBase
         },
     ]
 
+    checkTime: number = 0;
+
     StartService(app: any)
     {
         this.name = "flappyBirdShooter";
@@ -116,8 +118,8 @@ export class FlappyBirdShooter extends SubGameBase
     {
         //获取当前所有的senderId和信息
         LogHelper.info("Start to check: Do need send message to player");
-        var nowTime = Date.now();
-        LogHelper.info("startTime:" + new Date(nowTime).toString());
+        this.checkTime = Date.now();
+        LogHelper.info("startTime:" + new Date(this.checkTime).toString());
         //遍历每个senderId
         RedisHelper.client.hgetall(this.name,
             function (e, v)
@@ -126,16 +128,16 @@ export class FlappyBirdShooter extends SubGameBase
                 {
                     let lastPlayTime = parseInt(v[key]);
                     //离开上次游戏时间超过了设定的时间
-                    if (nowTime - lastPlayTime >= AppConfig.sendTimeOffset)
+                    if (this.checkTime - lastPlayTime >= AppConfig.sendTimeOffset)
                     {
                         //需要发送消息
-                        this.SendQuestion(key)
+                        this.SendPlayButton(key)
                     }
                 }
             }.bind(this));
     }
 
-    SendQuestion(id: string)
+    SendPlayButton(id: string)
     {
         let index = Random.Random0To1Int();
         let json = this.genericTemplate[index];
@@ -143,7 +145,7 @@ export class FlappyBirdShooter extends SubGameBase
             function ()//成功
             {
                 //console.log("发送成功,重新设置最后时间");
-                let newTime = Date.now() + AppConfig.nextTimeAdd;
+                let newTime = this.checkTime + AppConfig.nextTimeAdd;
                 RedisHelper.client.hset(this.name, id, newTime.toString());
             }.bind(this),
             function (err)//失败

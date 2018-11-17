@@ -35,7 +35,7 @@ export abstract class SubGameBase
             res.writeHead(200, {
                 'Content-Type': 'text-plain'
             });
-            res.end("{" + this.name + "] is running\n" + new Date().toString());
+            res.end("[" + this.name + "] is running\n" + new Date().toString());
         });
         this.app.get(this.hook,
             function (req, res)
@@ -79,9 +79,9 @@ export abstract class SubGameBase
             {
                 // Parse the request body from the POST
                 let body = req.body;
-                LogHelper.debug("");
-                LogHelper.debug("body");
-                LogHelper.debug(body);
+                //LogHelper.debug("");
+                //LogHelper.debug("body");
+                //LogHelper.debug(body);
                 // Check the webhook event is from a Page subscription
                 if (body.object === 'page')
                 {
@@ -91,8 +91,8 @@ export abstract class SubGameBase
                         // Get the webhook event. entry.messaging is an array, but 
                         // will only ever contain one event, so we get index 0
                         let event = entry.messaging[0];
-                        LogHelper.debug("messaging:");
-                        LogHelper.debug(event);
+                        //LogHelper.debug("messaging:");
+                        //LogHelper.debug(event);
                         if (event.game_play) 
                         {
                             this.HandleGamePlay(event);
@@ -100,6 +100,10 @@ export abstract class SubGameBase
                         else if (event.message) 
                         {
                             this.HandleMessage(event);
+                        }
+                        else 
+                        {
+                            this.HandleOther(event);
                         }
                     }.bind(this));
                     // Return a '200 OK' response to all events
@@ -113,12 +117,17 @@ export abstract class SubGameBase
             }.bind(this));
     }
 
+    HandleOther(event: any)
+    {
+
+    }
+
     HandleMessage(event: any)
     {
         let id = event.sender.id;
         if (event.message.text) 
         {
-            let json = { text: "Thank you for your attention. Please enjoy the game." };
+            let json = { text: "Welcome to my page!" };
             MessagerSender.Send(id, json, this.pageAccessToken);
         }
     }

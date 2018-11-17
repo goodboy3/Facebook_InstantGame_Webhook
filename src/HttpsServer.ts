@@ -54,8 +54,6 @@ export class HttpsServer
         //开启文件获取
         this.ResponesFileRequest();
 
-        this.app = null;
-
         //不同应用的响应
         new InstantGameDemo().StartService(this.app);
         new FlappyBirdShooter().StartService(this.app);
